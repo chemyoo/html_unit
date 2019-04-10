@@ -28,6 +28,7 @@ public class AppPhantomJs {
 		// js支持
 		config.setJavascriptEnabled(true);
 		// 驱动支持（第二参数表明的是你的phantomjs引擎所在的路径）
+		// 压缩包在lib文件夹下
 		config.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
 				"/software/phantomjs-home/phantomjs-for-windows/bin/phantomjs.exe");
 		// 创建无界面浏览器对象
