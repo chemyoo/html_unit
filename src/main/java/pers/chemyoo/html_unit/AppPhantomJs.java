@@ -6,6 +6,7 @@ package pers.chemyoo.html_unit;
  * @description class description
  */
 
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
@@ -15,6 +16,8 @@ import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class AppPhantomJs {
+
+	private static Random random = new Random();
 
 	public static void main(String[] args) {
 		// 设置必要参数
@@ -31,8 +34,9 @@ public class AppPhantomJs {
 		// 压缩包在lib文件夹下
 		config.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
 				"/software/phantomjs-home/phantomjs-for-windows/bin/phantomjs.exe");
+		
 		// 创建无界面浏览器对象
-		PhantomJSDriver driver = new PhantomJSDriver(config);
+		PhantomJSDriver driver = initDriver(config)[random.nextInt(3)];
 
 		// 设置隐性等待（作用于全局）
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
@@ -51,6 +55,17 @@ public class AppPhantomJs {
 		}
 		driver.close();
 		driver.quit();
+	}
+	
+	public static PhantomJSDriver[] initDriver(DesiredCapabilities config) {
+		String[] userAgent = new String []{"Mozilla/4.0","Mozilla/5.0","Opera/9.80"};
+		PhantomJSDriver[] drivers = new PhantomJSDriver[userAgent.length];
+		for(int i = 0, len = drivers.length; i < len; i++) {
+			config.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX + "userAgent", userAgent[i]);
+			config.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_CUSTOMHEADERS_PREFIX + "User-Agent", userAgent[i]);
+			drivers[i] = new PhantomJSDriver(config);
+		}
+		return drivers;
 	}
 
 }
