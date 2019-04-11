@@ -7,9 +7,11 @@ package pers.chemyoo.html_unit;
  */
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebElement;
@@ -36,11 +38,14 @@ public class AppPhantomJs {
 		// 压缩包在lib文件夹下
 		config.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
 				"/software/phantomjs-home/phantomjs-for-windows/bin/phantomjs.exe");
-		config.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX + "viewportSize", "{width: 1024, height: 600}");
-		config.getBrowserName();
+//		config.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX + "viewportSize", "1366")
+//		config.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX + "viewportSize", "766")
+		config.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, "--start-fullscreen");
+		config.setCapability("phantomjs.page.settings.viewportSize", "[1366,766]");
 		// 创建无界面浏览器对象
-		PhantomJSDriver driver = initDriver(config)[random.nextInt(3)];
-		
+		PhantomJSDriver[] drivers = initDriver(config);
+		PhantomJSDriver driver = drivers[random.nextInt(3)];
+		config.setBrowserName("Chemyoo");
 //		WebDriverWait wait = new WebDriverWait(driver, 10)
 		//开始打开网页，等待输入元素出现
 //		wait.until(ExpectedConditions.presenceOfElementLocated(By.id("")))
@@ -50,7 +55,7 @@ public class AppPhantomJs {
 		// 设置隐性等待（作用于全局）
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		// 打开页面
-		driver.get("https://www.socwall.com/");
+		driver.get("https://www.jb51.net/article/148632.htm");
 		System.out.println("网站解析完成...");
 		// 查找元素
 		WebElement element = driver.findElement(By.tagName("body"));
@@ -64,8 +69,14 @@ public class AppPhantomJs {
 		}
 		File imgFile = driver.getScreenshotAs(OutputType.FILE);
 		System.out.println(imgFile.getAbsolutePath());
-		driver.close();
-		driver.quit();
+		try {
+			FileUtils.moveFile(imgFile, new File("C:/Users/n_soul/Desktop/", imgFile.getName()));
+			FileUtils.deleteQuietly(imgFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.err.println(config.getBrowserName());
+		colseDriver(drivers);
 	}
 	
 	public static PhantomJSDriver[] initDriver(DesiredCapabilities config) {
@@ -77,6 +88,13 @@ public class AppPhantomJs {
 			drivers[i] = new PhantomJSDriver(config);
 		}
 		return drivers;
+	}
+	
+	public static void colseDriver(PhantomJSDriver[] drivers) {
+		for(PhantomJSDriver d : drivers) {
+			d.close();
+			d.quit();
+		}
 	}
 
 }
