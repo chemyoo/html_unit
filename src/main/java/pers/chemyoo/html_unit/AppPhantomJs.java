@@ -6,10 +6,12 @@ package pers.chemyoo.html_unit;
  * @description class description
  */
 
+import java.io.File;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
@@ -34,9 +36,16 @@ public class AppPhantomJs {
 		// 压缩包在lib文件夹下
 		config.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
 				"/software/phantomjs-home/phantomjs-for-windows/bin/phantomjs.exe");
-		
+		config.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX + "viewportSize", "{width: 1024, height: 600}");
+		config.getBrowserName();
 		// 创建无界面浏览器对象
 		PhantomJSDriver driver = initDriver(config)[random.nextInt(3)];
+		
+//		WebDriverWait wait = new WebDriverWait(driver, 10)
+		//开始打开网页，等待输入元素出现
+//		wait.until(ExpectedConditions.presenceOfElementLocated(By.id("")))
+		// Jsoup处理
+//		Document document = Jsoup.parse(driver.getPageSource())
 
 		// 设置隐性等待（作用于全局）
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
@@ -53,6 +62,8 @@ public class AppPhantomJs {
 		for (WebElement ele : element.findElements(By.cssSelector("a[href]"))) {
 			System.out.println("a[href] = " + ele.getAttribute("href"));
 		}
+		File imgFile = driver.getScreenshotAs(OutputType.FILE);
+		System.out.println(imgFile.getAbsolutePath());
 		driver.close();
 		driver.quit();
 	}
