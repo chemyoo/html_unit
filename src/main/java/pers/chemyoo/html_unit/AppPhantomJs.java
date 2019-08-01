@@ -37,11 +37,11 @@ public class AppPhantomJs {
 		// 驱动支持（第二参数表明的是你的phantomjs引擎所在的路径）
 		// 压缩包在lib文件夹下
 		config.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-				"/software/phantomjs-home/phantomjs-for-windows/bin/phantomjs.exe");
+				"lib/phantomjs/bin/phantomjs.exe");
 //		config.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX + "viewportSize", "1366")
 //		config.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX + "viewportSize", "766")
 		config.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, "--start-fullscreen");
-		config.setCapability("phantomjs.page.settings.viewportSize", "[1366,766]");
+		config.setCapability("phantomjs.page.settings.viewportSize", "[1920,1080]");
 		// 创建无界面浏览器对象
 		PhantomJSDriver[] drivers = initDriver(config);
 		PhantomJSDriver driver = drivers[random.nextInt(3)];
@@ -55,7 +55,7 @@ public class AppPhantomJs {
 		// 设置隐性等待（作用于全局）
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		// 打开页面
-		driver.get("https://www.jb51.net/article/148632.htm");
+		driver.get("https://weibo.com/u/2632243413/home?wvr=5");
 		System.out.println("网站解析完成...");
 		// 查找元素
 		WebElement element = driver.findElement(By.tagName("body"));
@@ -70,7 +70,7 @@ public class AppPhantomJs {
 		File imgFile = driver.getScreenshotAs(OutputType.FILE);
 		System.out.println(imgFile.getAbsolutePath());
 		try {
-			FileUtils.moveFile(imgFile, new File("C:/Users/n_soul/Desktop/", imgFile.getName()));
+			FileUtils.moveFile(imgFile, new File("C:\\Users\\Liujianqing\\Desktop", imgFile.getName()));
 			FileUtils.deleteQuietly(imgFile);
 		} catch (IOException e) {
 			e.printStackTrace();
