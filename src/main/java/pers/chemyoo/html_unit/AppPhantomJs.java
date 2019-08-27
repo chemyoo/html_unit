@@ -6,15 +6,19 @@ package pers.chemyoo.html_unit;
  * @description class description
  */
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.filechooser.FileSystemView;
+
 import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.By;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -41,10 +45,12 @@ public class AppPhantomJs {
 //		config.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX + "viewportSize", "1366")
 //		config.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX + "viewportSize", "766")
 		config.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, "--start-fullscreen");
-		config.setCapability("phantomjs.page.settings.viewportSize", "[1920,1080]");
+		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+		config.setCapability("phantomjs.page.settings.viewportSize", 
+				"["+ dimension.getWidth() + ", " + dimension.getHeight() + "]");
 		// 创建无界面浏览器对象
 		PhantomJSDriver[] drivers = initDriver(config);
-		PhantomJSDriver driver = drivers[random.nextInt(3)];
+		PhantomJSDriver driver = drivers[0];
 		config.setBrowserName("Chemyoo");
 //		WebDriverWait wait = new WebDriverWait(driver, 10)
 		//开始打开网页，等待输入元素出现
@@ -55,28 +61,30 @@ public class AppPhantomJs {
 		// 设置隐性等待（作用于全局）
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		// 打开页面
-		driver.get("https://weibo.com/u/2632243413/home?wvr=5");
+		driver.get("http://act.duba.com/wallpaper/gallery3004/index.html");
 		System.out.println("网站解析完成...");
 		// 查找元素
-		WebElement element = driver.findElement(By.tagName("body"));
-
-		for (WebElement ele : element.findElements(By.cssSelector("img"))) {
-			System.out.println(ele.getAttribute("src"));
-		}
-
-		for (WebElement ele : element.findElements(By.cssSelector("a[href]"))) {
-			System.out.println("a[href] = " + ele.getAttribute("href"));
-		}
-		File imgFile = driver.getScreenshotAs(OutputType.FILE);
-		System.out.println(imgFile.getAbsolutePath());
 		try {
-			FileUtils.moveFile(imgFile, new File("C:\\Users\\Liujianqing\\Desktop", imgFile.getName()));
+			String page = driver.getPageSource();
+			Document document = Jsoup.parse(page);
+			System.out.println(document);
+			System.out.println(document.selectFirst("body").selectFirst("li.J_tab.t3"));
+//	
+//			for (WebElement ele : element.findElements(By.cssSelector("a[href]"))) {
+//			System.out.println("a[href] = " + ele.getAttribute("href"));
+//			}
+			File imgFile = driver.getScreenshotAs(OutputType.FILE);
+			System.out.println(imgFile.getAbsolutePath());
+			
+			String desktop = FileSystemView.getFileSystemView().getHomeDirectory().getAbsolutePath();
+			FileUtils.moveFile(imgFile, new File(desktop + "/", imgFile.getName()));
 			FileUtils.deleteQuietly(imgFile);
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			colseDriver(drivers);
 		}
 		System.err.println(config.getBrowserName());
-		colseDriver(drivers);
 	}
 	
 	public static PhantomJSDriver[] initDriver(DesiredCapabilities config) {
