@@ -57,8 +57,9 @@ public class App
 				});
 			}
 			OutputStream outTarget = new FileOutputStream("D:/流通集团型企业内部子公司的“两票制”认定结果.xlsx");
-			ChemyooUtils.commonExportData2Excel(outTarget , title, list, "", true);
-			ExcelUtils.CSV.commonExportData(outTarget, title, list, "");
+//			ChemyooUtils.commonExportData2Excel(outTarget , title, list, "", true);
+//			ExcelUtils.CSV.commonExportData(outTarget, title, list, "");
+			ExcelUtils.Excel.commonExportData(outTarget , title, list, "", true);
 			outTarget.flush();
 			outTarget.close();
 		} catch (Exception e) {

@@ -10,6 +10,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -18,6 +19,7 @@ import javax.swing.filechooser.FileSystemView;
 import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
@@ -59,10 +61,18 @@ public class AppPhantomJs {
 //		Document document = Jsoup.parse(driver.getPageSource())
 
 		// 设置隐性等待（作用于全局）
-		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(60 * 2, TimeUnit.SECONDS);
+		driver.manage().timeouts().pageLoadTimeout(60 * 2, TimeUnit.SECONDS);
+		// 模拟登陆
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.DAY_OF_YEAR, 1);
+		Cookie cookie = new Cookie("JSESSIONID", "0C90D5B5742C26C0A8048D772B04E9E8", "112.94.224.249", "/gzfreehold-server", calendar.getTime());
+		driver.manage().addCookie(cookie);
+		// 模拟登陆结束
 		// 打开页面
-		driver.get("http://act.duba.com/wallpaper/gallery3004/index.html");
-		System.out.println("网站解析完成...");
+		driver.get("http://112.94.224.249:9048/gzfreehold-server/#/index");
+//		driver.executeScript("alert(1)");
+		System.out.println("网站解析完成..." + driver.manage().getCookies().toString());
 		// 查找元素
 		try {
 			String page = driver.getPageSource();
