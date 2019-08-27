@@ -25,6 +25,10 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+/**
+ * @author chemyoo
+ * 异步脚本执行无法监听到，异步请求可使用抓取接口的方式
+ */
 public class AppPhantomJs {
 
 	private static Random random = new Random();
@@ -70,8 +74,8 @@ public class AppPhantomJs {
 		driver.manage().addCookie(cookie);
 		// 模拟登陆结束
 		// 打开页面
-		driver.get("http://112.94.224.249:9048/gzfreehold-server/#/index");
-//		driver.executeScript("alert(1)");
+		driver.get("http://192.168.0.110:8909/crpcg-coretask/manager.html");
+//		driver.executeScript("document.body.innerHTML = '......'");
 		System.out.println("网站解析完成..." + driver.manage().getCookies().toString());
 		// 查找元素
 		try {
@@ -98,7 +102,7 @@ public class AppPhantomJs {
 	}
 	
 	public static PhantomJSDriver[] initDriver(DesiredCapabilities config) {
-		String[] userAgent = new String []{"Mozilla/4.0","Mozilla/5.0","Opera/9.80"};
+		String[] userAgent = new String []{"Opera/9.80","Mozilla/4.0","Mozilla/5.0"};
 		PhantomJSDriver[] drivers = new PhantomJSDriver[userAgent.length];
 		for(int i = 0, len = drivers.length; i < len; i++) {
 			config.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_SETTINGS_PREFIX + "userAgent", userAgent[i]);
